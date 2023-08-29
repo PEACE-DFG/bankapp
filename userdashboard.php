@@ -6,6 +6,8 @@ require 'database.php';
    
 }
 
+
+
 if (isset($_SESSION['email'])) {
   echo "<script>
           window.onload = function() {
@@ -21,7 +23,6 @@ if (isset($_SESSION['email'])) {
  $sql = "SELECT * FROM user";
  $select = mysqli_query($conn, $sql);
  $email =$_SESSION['email'];
-// $sql = "SELECT email,dateregistered from user WHERE email=?,date=?";
 $sql = "SELECT * FROM user WHERE email = ? ";
 $stm = $conn->prepare($sql);
 $stm->bind_param('s', $email);
@@ -33,13 +34,6 @@ if (isset($_POST['update'])) {
   $bvn = $_POST['bvn'];
   $phone = $_POST['phone'];
   
-  // Check if an image was uploaded
-  // if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-  //     $imageData = file_get_contents($_FILES['image']['tmp_name']);
-  //     $imageData = mysqli_real_escape_string($conn, $imageData);
-  //     $imageUpdateQuery = "UPDATE user SET picture = '$imageData' WHERE id = $id";
-  //     mysqli_query($conn, $imageUpdateQuery);
-  // }
   $files=$_FILES['image'];
   $file_name=$_FILES['image']['name'];
   $temp_name=$_FILES['image']['tmp_name'];
@@ -57,7 +51,7 @@ if (isset($_POST['update'])) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Data Updated Successfully',
-                    text: 'Refresh the Page to See Changes'
+                    text: 'Changes will be made in few seconds do not worry'
                 });
             };
             window.onload(); // Call the function
@@ -113,6 +107,7 @@ if (isset($_POST['add'])) {
                         };
                         window.onload(); // Call the function
                      </script>";
+                 
             } else {
                 echo "<script>
                         window.onload = function() {
@@ -176,6 +171,8 @@ if (isset($_POST['withdraw'])) {
                             };
                             window.onload(); // Call the function
                          </script>";
+                
+
                 } else {
                     echo "<script>
                             window.onload = function() {
@@ -250,7 +247,6 @@ if (isset($_POST['withdraw'])) {
     height: 100px;
 }
 
-/* Media Queries */
 @media (max-width: 1200px) {
     .progress-circle-svg {
         width: 80px;
@@ -286,7 +282,6 @@ if (isset($_POST['withdraw'])) {
     }
 }
 
-/* Media Query for smaller devices (below 400px) */
 @media (max-width: 320px) {
     .progress-circle-svg {
         width: 20px;
@@ -294,7 +289,6 @@ if (isset($_POST['withdraw'])) {
     }
 }
 
-/* Add more media queries for other screen sizes if needed */
 
         .card{
             width:280px;
@@ -341,14 +335,12 @@ if (isset($_POST['withdraw'])) {
         .skill{
           width:100px;
           height:100px;
-          /* background-color:aqua; */
           position:relative;
         }
         .outer{
           height:100px;
           width:100px;
           border-radius:50%;
-          /* border:1px solid red; */
           padding:9px;
           box-shadow:6px 6px 10px -1px rgba(0,0,0,0.15),
           -6px -6px 10px -1px rgba(255,255,255,0.7)
@@ -374,15 +366,14 @@ if (isset($_POST['withdraw'])) {
 
 .progress-circle {
   fill: none;
-  stroke: #007bff; /* Choose your progress color */
+  stroke: #007bff; 
   stroke-width: 8;
-  stroke-dasharray: 251.2; /* Circumference of the circle (2 * π * radius) */
-  stroke-dashoffset: 0; /* Will be adjusted with JavaScript */
-  transition: stroke-dashoffset 0.5s ease; /* Smooth animation */
+  stroke-dasharray: 251.2;
+  stroke-dashoffset: 0; 
+  transition: stroke-dashoffset 0.5s ease; 
 }
 
      
-/* Responsive styles */
 @media (max-width: 991px) {
     .col-1,
     .col-4,
@@ -394,7 +385,6 @@ if (isset($_POST['withdraw'])) {
       display:flex;
       flex-direction:column;
       justify-content:center;
-      /* margin:auto; */
     }
     .blue{
       width:100%;
@@ -423,7 +413,6 @@ if (isset($_POST['withdraw'])) {
     .blue,
     .cards {
         width: 100%;
-        /* text-align: center; */
     }
 }
 
@@ -447,17 +436,21 @@ if (isset($_POST['withdraw'])) {
     }
 }
 
-/* Adjust modal size for smaller screens */
 @media (max-width: 576px) {
     .modal-dialog {
         max-width: 90%;
     }
 }
 @media (max-width: 479px) {
-    /* Adjust the stroke width for smaller screens */
     .bg-circle,
     .progress-circle {
         stroke-width: 6;
+    }
+    .ghost{
+      display:block;
+    }
+    .mew{
+      display:none;
     }
 }
 body{
@@ -477,11 +470,8 @@ body{
 
 
     <section class="all">
-        <!-- <div class="loader">
-        <img src="https://i.gifer.com/origin/13/138f4c87ed9b322952c3e0da2b264938_w200.gif"  alt="">
-
-        </div> -->
-        <div class="content" style="display: non;"> 
+     
+        <div class="content" > 
         <!-- Structure -->
         <section class="container">
             <section class="row " >
@@ -526,18 +516,17 @@ body{
                     </div>
 
                     <div class="mt-3  text-center" style="padding-top:0px"  >
-                    <!-- <img src="<?php //echo $user['picture'];?>" width="50px" style="border-radius:50%"  alt=""> -->
                     <?php
 // Assuming $user['picture'] holds the image path
-$userPicture = $user['picture']; // Path to uploaded image
+$userPicture = $user['picture']; 
 $defaultPicture = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'; // Path to default image
 
-// Check if the user has uploaded an image
+// Checking if the user has uploaded an image
 if (!empty($userPicture) && file_exists($userPicture)) {
-    // Display the uploaded image
+    // Displaying the uploaded image
     echo '<img src="' . $userPicture . '" width="50px" style="border-radius: 50%;" alt="User Image">';
 } else {
-    // Display the default image
+    // Displaying the default image
     echo '<img src="' . $defaultPicture . '" width="50px" style="border-radius: 50%;" alt="Default Image">';
 }
 ?>
@@ -581,7 +570,7 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                       <!-- cards section -->
                     <div class="mt-3" style="display:flex;justify-content:space-between">
                         <div style="color:orange" class="pb-2">
-                            <h6> <span><i class="fa-solid fa-circle fa-fade" style="color:orange"></i></span> My Balance: <span><?php echo $user['amount'] ?></span> </h6>
+                            <h6> <span><i class="fa-solid fa-circle fa-fade" style="color:orange"></i></span> My Balance: # <span><?php echo $user['amount'] ?></span> </h6>
                         </div>
                         <div style="color:orange" class="pb-2">
                             <h6>My Cards <span class="ms-2"><i class="fa-solid fa-circle-plus fa-fade"></i></span></h6>
@@ -599,7 +588,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                               <span style="display:flex;justify-content:right" class="m-2">
                                  <img src="https://seeklogo.com/images/M/master-card-logo-5806741801-seeklogo.com.png" width="60px" style="border-radius:10px" alt="">
                             </span>
-                                <!-- sim -->
                             <div class="mx-2" style="display:flex;justify-content:space-between;align-items:center;color:white">
                                 <div>
                                 <img src="https://gitea.osmocom.org/avatars/43854724e3fef0f8e93be3753055c77a?size=280" width="50px" alt="">
@@ -624,7 +612,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                             <img src="https://e7.pngegg.com/pngimages/618/512/png-clipart-visa-logo-mastercard-credit-card-payment-visa-blue-company.png" width="60px" style="border-radius:10px" alt="">
 
                                           </span>
-                            <!-- sim -->
                             <div class="mx-2" style="display:flex;justify-content:space-between;align-items:center;color:white">
                                 <div>
                                 <img src="https://gitea.osmocom.org/avatars/43854724e3fef0f8e93be3753055c77a?size=280" width="50px" alt="">
@@ -639,7 +626,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
 
 
                     </div>
-                    <!-- Agregate section-->
                     <section>
                       <div class="bluetooth">
                         <div class="blue">
@@ -650,7 +636,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
           <small>Add Money</small>
         </button>
 
-        <!-- Add Money Modal -->
         <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -659,7 +644,7 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <!-- Your Add Money modal content goes here -->
+              
                 <h5>Add Money From Your Bank</h5>
                 <form method="post" action="">
                 <div class="form-floating mb-3">
@@ -678,16 +663,13 @@ if (!empty($userPicture) && file_exists($userPicture)) {
         </div>
       </div>
 
-      <!-- Repeat the same structure for Transfer and Withdraw buttons/modals with unique IDs -->
 
       <div class="text-center">
-        <!-- Transfer Button -->
         <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#transferModal">
           <i class="fa-solid fa-arrow-right-arrow-left" style="color: orange;"></i><br>
           <small>Transfer</small>
         </button>
 
-        <!-- Transfer Modal -->
         <div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -696,7 +678,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <!-- Your Transfer modal content goes here -->
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -708,13 +689,11 @@ if (!empty($userPicture) && file_exists($userPicture)) {
       </div>
 
       <div class="text-center">
-        <!-- Withdraw Button -->
         <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#withdrawModal">
           <i class="fa-solid fa-arrow-down-short-wide" style="color: orange;"></i><br>
           <small>Withdraw</small>
         </button>
 
-        <!-- Withdraw Modal -->
         <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -723,7 +702,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <!-- Your Withdraw modal content goes here -->
                 <h2>Withdraw Your Money</h2>
                 <form method="post" action="">
                 <div class="form-floating mb-3">
@@ -754,14 +732,14 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                           <?php
 
 
-$userID = $user['id']; // Replace with the actual user's ID
+$userID = $user['id']; 
 
 $query = "SELECT fullname, email, password, account, bvn, cardnumber, picture, phonenumber FROM user WHERE id = $userID";
 $result = $conn->query($query);
 
 if ($result->num_rows === 1) {
     $row = $result->fetch_assoc();
-    $totalFields = count($row); // Total number of fields
+    $totalFields = count($row); 
     $completedFields = 0;
 
     foreach ($row as $field => $value) {
@@ -770,13 +748,13 @@ if ($result->num_rows === 1) {
       }
   }
 
-    // Calculate progress percentage
+  
     $progressPercentage = ($completedFields / ($totalFields )) * 100;
-     // Excluding picture
+  
      $integerProgress = intval($progressPercentage);  
      
 
-    // Generate SVG
+
     echo '<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">';
     echo '<circle class="bg-circle" cx="50" cy="50" r="40" />';
     echo '<circle class="progress-circle" cx="50" cy="50" r="40" style="stroke-dashoffset: ' . (251.2 - (2.512 * $progressPercentage)) . ';" />';
@@ -793,14 +771,10 @@ $conn->close();
                     
                       </div>
 
-                      <!-- update dashboard -->
                       <div class="d-grid my-3 gap-2 col-6 mx-auto">
     <button class="btn btn-light text-warning" style="font-weight: 900;" type="button" data-bs-toggle="modal" data-bs-target="#updateDetailsModal">Update Details</button>
 </div>
-<!-- With this line -->
-<!-- <img src="data:image/jpeg;base64,<?php echo base64_encode($user['picture']); ?>" width="100px" alt="my_image"> -->
 
-                      <!-- update Modal -->
                       <div class="modal fade" id="updateDetailsModal" tabindex="-1" aria-labelledby="updateDetailsModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -810,15 +784,14 @@ $conn->close();
       </div>
       <br>
       <div class="modal-body" style="max-width:300px;margin:auto;border:1px solid transparent; box-shadow:5px 5px 10px grey;padding:10px 0px;text-align:center;">
-        <!-- Your modal content goes here -->
        
 
 <form action="" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="idd" value="<?php echo $user['id'] ?>">
+    <input type="hidden" name="idd" value="<?php echo $user['id'] ?>" >
     
     <p >
     <div class="form-floating mb-3">
-  <input type="text" name="bvn" value="<?php echo $user['bvn'] ?>" class="form-control " id="floatingInput" >
+  <input type="text" name="bvn" value="<?php echo $user['bvn'] ?>" class="form-control " id="floatingInput">
   <label for="floatingInput">BVN</label>
 </div>
       
@@ -826,7 +799,7 @@ $conn->close();
     
     <p class="text-center">
         <label for="image">Choose an image:</label>
-        <input type="file" name="image" id="image" class="ms-5" accept="image/*">
+        <input type="file" name="image" id="image" class="ms-5" accept="image/*" required>
     </p>
     
     <p>
@@ -861,10 +834,9 @@ $conn->close();
                 <section class="col-4 g-2 " style="background-color:rgb(203,220,203,0.7);1px solid transparent;box-shadow:5px 5px 10px #D3D3D3;border-radius:10px">
                 <div class="m-2" style="display:flex;justify-content:space-between">
                     <div>
-                    <!-- <img src="<?php //echo $user['picture'];?>" width="40px" style="border-radius:50%"  alt=""> -->
                     <?php
 $userPicture = $user['picture']; 
-$defaultPicture = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'; // Path to default image
+$defaultPicture = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'; 
 
 if (!empty($userPicture) && file_exists($userPicture)) {
     echo '<img src="' . $userPicture . '" width="50px" style="border-radius: 50%;" alt="User Image">';
@@ -888,7 +860,6 @@ if (!empty($userPicture) && file_exists($userPicture)) {
                 <div id="chartd" class="mew">
 
                 </div>
-                <!--  -->
 <hr>
                
                 <div id="char" class="ghost">
@@ -917,45 +888,17 @@ if (!empty($userPicture) && file_exists($userPicture)) {
     </section>
     <script src="js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
 
 
-    <!-- <script>
-$(document).ready(function() {
-  $("#update-form").on("submit", function(event) {
-    event.preventDefault(); 
-
-    var formData = $(this).serialize();
-
-    $.ajax({
-      type: "POST",
-      url: "update_script.php", 
-      data: formData,
-      success: function(response) {
-        // Display success or error message
-        $("#update-message").html(response);
-      }
-    });
-  });
-});
-</script> -->
+    
 
     <script>
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     const loader = document.querySelector('.loader');
-//     const content = document.querySelector('.content');
 
-//     // Simulate content loading
-//     setTimeout(function () {
-//         loader.style.display = 'none';
-//         content.style.display = 'block';
-//     }, 2000); // Simulated delay of 2 seconds
-// });
 
 var options = {
           series: [{
@@ -970,7 +913,7 @@ var options = {
           bar: {
             borderRadius: 10,
             dataLabels: {
-              position: 'top', // top, center, bottom
+              position: 'top', 
             },
           }
         },
@@ -1041,7 +984,6 @@ var options = {
         chart.render();
 
 
-        // Dailly inflation
         
         var options = {
           series: [44, 55, 13, 43, 22],
@@ -1066,7 +1008,6 @@ var options = {
         var chart = new ApexCharts(document.querySelector("#chartd"), options);
         chart.render();
 
-        // second chart
 
         var options = {
           series: [44, 55, 67, 83],
@@ -1087,7 +1028,6 @@ var options = {
                 show: true,
                 label: 'Total',
                 formatter: function (w) {
-                  // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
                   return 249
                 }
               }

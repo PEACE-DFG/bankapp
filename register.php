@@ -131,7 +131,56 @@
                                 $mail->setFrom('CODEMasterBank.com');
                                 $mail->addAddress($data['email'], $data['fullname']);
                                 $mail->Subject = 'Registration Verification';
-                                $mail->Body = 'Thank you for Registering with us, Your Account Has Been Created'.' ' . $data['email'] .' ' . ''. ' Your account number is:'. $accountNumber .'and also your Card Number is: '. $randomCardNumber . ' , Please Do not forget to complete your details in your Dashboard ';
+                                // Email body
+$message = "
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    text-align:center;
+  }
+  .header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .content {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  .highlight {
+    background-color: #ffffcc;
+    padding: 5px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+  <div class='container'>
+    <div class='header'>Thank You for Registering with Us!</div>
+    <div class='content'>
+    <img src='https://terraacademyforarts.com/wp-content/uploads/2023/01/jgcjc.png' alt='Registration Successful' style='max-width: 100%; height: auto; margin-top: 20px;'>
+  <br>
+      Dear {$data['email']},
+      <br>
+      <p>Your account has been successfully created.</p>
+      <p>Your account number is: <span class='highlight'>{$accountNumber}</span></p>
+      <p>Your card number is: <span class='highlight'>{$randomCardNumber}</span></p>
+      <p>Please don't forget to complete your details in your Dashboard.</p>
+    </div>
+  </div>
+</body>
+</html>
+";
+
+$mail->Body = $message;
+
+                                // $mail->Body = 'Thank you for Registering with us, Your Account Has Been Created'.' ' . $data['email'] .' ' . ''. ' Your account number is:'. $accountNumber .'and also your Card Number is: '. $randomCardNumber . ' , Please Do not forget to complete your details in your Dashboard ';
                                 $mail->send();
                                 echo "<script>
                                 window.onload = function() {
@@ -194,23 +243,6 @@
         </div>
     </section>
 
-    <!-- Loader -->
-    <!-- <div class="loader">
-        <img src="https://i.gifer.com/origin/13/138f4c87ed9b322952c3e0da2b264938_w200.gif" alt="">
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const loader = document.querySelector('.loader');
-            const content = document.querySelector('.content');
-
-            // Simulate content loading
-            setTimeout(function () {
-                loader.style.display = 'none';
-                content.style.display = 'block';
-            }, 2000); // Simulated delay of 2 seconds
-        });
-    </script> -->
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
