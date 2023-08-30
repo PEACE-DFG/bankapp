@@ -1,6 +1,11 @@
 <?php
 session_start();
 require 'database.php';
+                use PHPMailer\PHPMailer\PHPMailer;
+                use PHPMailer\PHPMailer\Exception;
+                require "./PHPMailer/src/Exception.php";
+                require "./PHPMailer/src/PHPMailer.php";
+                require "./PHPMailer/src/SMTP.php";
  if(!isset($_SESSION['email'])){
    header('location:login.php');
    
@@ -97,23 +102,122 @@ if (isset($_POST['add'])) {
             $updateTotalAmountQuery = "UPDATE user SET amount = amount + $amount WHERE email = '$userId'";
             
             if (mysqli_query($conn, $updateTotalAmountQuery)) {
+              try {
+                $mail = new PHPMailer(true); // Add true parameter to enable exceptions
+        
+                // SMTP configuration
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com'; // Your SMTP host
+                $mail->SMTPAuth = true;
+                $mail->Username = 'awofesobipeace@gmail.com'; // Your SMTP username
+                $mail->Password = 'gbnmkwehbmzlzlth'; // Your SMTP password
+                $mail->SMTPSecure = 'ssl'; // Enable TLS encryption
+                $mail->Port = 465; // SMTP port
+        
+                // Sender and recipient
+                $mail->setFrom('awofesobipeace@gmail.com', 'CODEMasterBank'); // Sender's email and name
+                $mail->addAddress($email, $user['fullname']); // Recipient's email and name
+        
+                // Email content
+                $mail->isHTML(true);
+                $mail->Subject = 'Transaction Notification';
+        
+                // Compose the email message
+                $message = "Hello {$user['fullname']},<br>";
+                // Compose the email message
+$message = "<html>
+<head>
+<style>
+  /* Add your CSS styles here */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .header {
+    background-color: #f7f7f7;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    color: #333333;
+  }
+  .content {
+    padding: 20px;
+    font-size: 16px;
+    color: #555555;
+  }
+</style>
+
+</head>
+<body>
+  <div class='container'>
+    <div class='header'>Transaction Notification</div>
+    <p><img src='https://icon-library.com/images/418329c59c.png' alt='Transaction Successful' style='max-width: 100%; height: auto;'></p>
+
+    <div class='content'>
+    Hello {$user['fullname']},<br>
+    You have successfully added $" . $amount . " to your account.
+    <h3>Your total Balance is $" . ($user['amount'] + $amount) . ".</h3>
+    </div>
+  </div>
+</body>
+</html>";
+
+                $mail->Body = $message;
+        
+                // Send the email
+                $mail->send();
+        
                 echo "<script>
                         window.onload = function() {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Amount Added Successfully',
-                                text: 'Refresh the Page to See Changes'
+                                text: 'Changes will be made soon, Check your Email For Transaction History'
                             });
                         };
                         window.onload(); // Call the function
                      </script>";
+            } catch (Exception $e) {
+                echo "<script>
+                        window.onload = function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Email Error,Please Complete your Details in the Dashbord Section',
+                                text: 'An error occurred while sending the email: {$mail->ErrorInfo}'
+                            });
+                        };
+                        window.onload(); // Call the function
+                     </script>";
+            }
+        } else {
+            echo "<script>
+                    window.onload = function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error Updating Data,Please Complete your Details in the Dashbord Section',
+                            text: '" . mysqli_error($conn) . "'
+                        });
+                    };
+                    window.onload(); // Call the function
+                 </script>";
+        }
                  
             } else {
                 echo "<script>
                         window.onload = function() {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error Updating Data',
+                                title: 'Error Updating Data,Please Complete your Details in the Dashbord Section',
                                 text: '" . mysqli_error($conn) . "'
                             });
                         };
@@ -132,86 +236,167 @@ if (isset($_POST['add'])) {
                     window.onload(); // Call the function
                  </script>";
         }
-      }}}        
+      }}
 
-if (isset($_POST['withdraw'])) {
-  $amount = $_POST['amount'];
-  $userId = $_SESSION['email'];
-
-  $selectTotalAmountQuery = "SELECT amount, fullname, email, password, account, bvn, cardnumber, picture, phonenumber FROM user WHERE email = '$userId'";
-  $result = $conn->query($selectTotalAmountQuery);
-
-  if ($result) {
-      if ($result->num_rows > 0) {
-          $row = $result->fetch_assoc();
-          $totalamount = intval($row['amount']);
-
-          $requiredFields = ['fullname', 'email', 'password', 'account', 'bvn', 'cardnumber', 'picture', 'phonenumber'];
-          $isComplete = true;
-
-          foreach ($requiredFields as $field) {
-              if (empty($row[$field])) {
-                  $isComplete = false;
-                  break;
-              }
-          }
-
-          if ($isComplete) {
-            if ($totalamount >= $amount) {
-                $totalamount -= intval($amount);
-                $updateTotalAmountQuery = "UPDATE user SET amount = '$totalamount' WHERE email = '$userId'";
-                if (mysqli_query($conn, $updateTotalAmountQuery)) {
-                    echo "<script>
-                            window.onload = function() {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Withdrawal Successful',
-                                    text: 'Refresh the Page to See Changes'
-                                });
-                            };
-                            window.onload(); // Call the function
-                         </script>";
-                
-
-                } else {
-                    echo "<script>
-                            window.onload = function() {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error Updating Data',
-                                    text: '" . mysqli_error($conn) . "'
-                                });
-                            };
-                            window.onload(); // Call the function
-                         </script>";
+      if (isset($_POST['withdraw'])) {
+        $amount = $_POST['amount'];
+        $userId = $_SESSION['email'];
+    
+        $selectTotalAmountQuery = "SELECT amount, fullname, email, password, account, bvn, cardnumber, picture, phonenumber FROM user WHERE email = '$userId'";
+        $result = $conn->query($selectTotalAmountQuery);
+    
+        if ($result) {
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $totalamount = intval($row['amount']);
+    
+                $requiredFields = ['fullname', 'email', 'password', 'account', 'bvn', 'cardnumber', 'picture', 'phonenumber'];
+                $isComplete = true;
+    
+                foreach ($requiredFields as $field) {
+                    if (empty($row[$field])) {
+                        $isComplete = false;
+                        break;
+                    }
                 }
-            } else {
-                echo "<script>
-                        window.onload = function() {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Insufficient Funds',
-                                text: 'You do not have sufficient funds for the withdrawal.'
-                            });
-                        };
-                        window.onload(); // Call the function
-                     </script>";
-            }
-        } else {
-            echo "<script>
-                    window.onload = function() {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Incomplete Details',
-                            text: 'Please complete all your details before making a withdrawal.'
-                        });
-                    };
-                    window.onload(); // Call the function
-                 </script>";
-        }
-        
-      }}}        
+    
+                if ($isComplete) {
+                    if ($totalamount >= $amount) {
+                        $totalamount -= intval($amount);
+                        $updateTotalAmountQuery = "UPDATE user SET amount = '$totalamount' WHERE email = '$userId'";
+                        if (mysqli_query($conn, $updateTotalAmountQuery)) {
+                         
+    
+                            $mail = new PHPMailer(true);
+    
+                            try {
+                                $mail->isSMTP();
+                                $mail->Host = 'smtp.gmail.com';
+                                $mail->SMTPAuth = true;
+                                $mail->Username = 'awofesobipeace@gmail.com';
+                                $mail->Password = 'gbnmkwehbmzlzlth';
+                                $mail->SMTPSecure = 'ssl';
+                                $mail->Port = 465;
+    
+                                $mail->setFrom('awofesobipeace@gmail.com', 'CODEMasterBank');
+                                $mail->addAddress($row['email'], $row['fullname']);
+    
+                                $mail->isHTML(true);
+                                $mail->Subject = 'Withdrawal Notification';
+    
+                                $message = '
+                                <html>
+                                <head>
+                                <style>
+  /* Add your CSS styles here */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .header {
+    background-color: #f7f7f7;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    color: #333333;
+  }
+  .content {
+    padding: 20px;
+    font-size: 16px;
+    color: #555555;
+  }
+</style>
+                                </head>
+                                <body>
+                                <div class="container">
+                                    <div class="header">Withdrawal Successful</div>
+                                    <img src="https://icon-library.com/images/418329c59c.png" alt="Transaction Successful">
 
+                                    <div class="content">
+                                        Hello ' . $row['fullname'] . ',<br>
+                                        You have successfully withdrawn $' . $amount . ' from your account.<br>
+                                        <h3>Your total Balance is $' . ($user['amount'] - $amount) . '.</h3>
+
+                                    </div>
+                                </div>
+                                </body>
+                                </html>';
+    
+                                $mail->Body = $message;
+                                $mail->send();
+    
+                                echo '<script>
+                                        window.onload = function() {
+                                            Swal.fire({
+                                                icon: "success",
+                                                title: "Withdrawal Successful",
+                                                text: "Changes will be made soon, Check your Email For Transaction History"
+                                            });
+                                        };
+                                        window.onload(); // Call the function
+                                    </script>';
+                            } catch (Exception $e) {
+                                echo '<script>
+                                        window.onload = function() {
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Error Sending Email",
+                                                text: "' . $e->getMessage() . '"
+                                            });
+                                        };
+                                        window.onload(); // Call the function
+                                    </script>';
+                            }
+                        } else {
+                            echo '<script>
+                                    window.onload = function() {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Error Updating Data",
+                                            text: "' . mysqli_error($conn) . '"
+                                        });
+                                    };
+                                    window.onload(); // Call the function
+                                </script>';
+                        }
+                    } else {
+                        echo '<script>
+                                window.onload = function() {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Insufficient Funds",
+                                        text: "You do not have sufficient funds for the withdrawal."
+                                    });
+                                };
+                                window.onload(); // Call the function
+                            </script>';
+                    }
+                } else {
+                    echo '<script>
+                            window.onload = function() {
+                                Swal.fire({
+                                    icon: "warning",
+                                    title: "Incomplete Details",
+                                    text: "Please complete all your details before making a withdrawal."
+                                });
+                            };
+                            window.onload(); // Call the function
+                        </script>';
+                }
+            }
+        }
+    }
+    
                                      
                                       
 
