@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="sweetalert2.min.css">
 
     <style>
-        .loader {
+        /* .loader {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -21,7 +21,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 1000;
-        }
+        } */
         
         .loader img {
             width: 150px;
@@ -179,20 +179,22 @@ $message = "
 ";
 
 $mail->Body = $message;
-
-                                // $mail->Body = 'Thank you for Registering with us, Your Account Has Been Created'.' ' . $data['email'] .' ' . ''. ' Your account number is:'. $accountNumber .'and also your Card Number is: '. $randomCardNumber . ' , Please Do not forget to complete your details in your Dashboard ';
                                 $mail->send();
-                                echo "<script>
-                                window.onload = function() {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Registration Successful',
-                                        text: 'A verification email has been sent to your registered email address.'
-                                    });
-                                };
-                                window.onload(); // Call the function
-                             </script>";
-                                header('location:Login.php');
+                               echo"
+                               <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Registration Successful',
+            text: 'A verification email has been sent to your registered email address.'
+        }).then(() => {
+            window.location.href = 'Login.php'; // Redirect to Login page after user clicks 'OK'
+        });
+    });
+</script>
+                               ";
+
                             }else{
                                 echo "Something went wrong" . mysqli_error($conn);
                             }
@@ -245,7 +247,7 @@ $mail->Body = $message;
 
 
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 </html>
